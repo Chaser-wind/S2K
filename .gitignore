@@ -1,0 +1,7 @@
+/.vscode
+/kanga/*.class
+/src/*.kg
+/syntaxtree/*.class
+/visitor/*.class
+*.jj
+jtb132.jar
