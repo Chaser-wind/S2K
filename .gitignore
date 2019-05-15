@@ -2,6 +2,8 @@
 /kanga/*.class
 /src/*.kg
 /syntaxtree/*.class
+/stat/*.class
+/stat/.DS_Store
 /visitor/.DS_Store
 /kanga/.DS_Store
 /src/.DS_Store
