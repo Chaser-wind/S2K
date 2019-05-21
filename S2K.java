@@ -1,7 +1,8 @@
-import kanga.*;
+import spiglet.*;
 import visitor.*;
 import syntaxtree.*;
 import java.io.*;
+import utils.*;
 
 public class S2K {
     static public void main(String[] args) {
@@ -11,7 +12,22 @@ public class S2K {
                 return;
             }
             InputStream in = new FileInputStream(args[0]);
-            Node root = new KangaParser(in).Goal();
+            Node root = new SpigletParser(in).Goal();
+
+            GraphVertexVisitor VVis = new GetGraphVertex();
+            root.accept(VVis);
+            
+            new SpigletParser(in);
+			Node AST = SpigletParser.Goal();
+			// visit 1: Get Flow Graph Vertex
+			AST.accept(new GetFlowGraphVertex());
+			// visit 2: Get Flow Graph
+			AST.accept(new GetFlowGraph());
+			// Linear Scan Algorithm on Flow Graph
+			new Temp2Reg().LinearScan();
+			// visit 3: Spiglet->Kanga
+            AST.accept(new Spiglet2Kanga());
+            
             String outputfile = null;
             if (args.length > 1) {
                 outputfile = args[1];
