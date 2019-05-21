@@ -7,4 +7,4 @@ all: S2K
 
 
 clean:
-	rm -f *.class ./syntaxtree/*.class ./visitor/*.class ./kanga/*.class
+	rm -f *.class ./syntaxtree/*.class ./visitor/*.class ./kanga/*.class ./stat/*.class ./src/*.kg
