@@ -6,7 +6,8 @@ package syntaxtree;
 
 /**
  * Grammar production:
- * f0 -> HAllocate()
+ * f0 -> Call()
+ *       | HAllocate()
  *       | BinOp()
  *       | SimpleExp()
  */

@@ -14,10 +14,6 @@ package syntaxtree;
  *       | HLoadStmt()
  *       | MoveStmt()
  *       | PrintStmt()
- *       | ALoadStmt()
- *       | AStoreStmt()
- *       | PassArgStmt()
- *       | CallStmt()
  */
 public class Stmt implements Node {
    public NodeChoice f0;

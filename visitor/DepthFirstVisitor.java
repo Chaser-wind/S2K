@@ -43,19 +43,10 @@ public class DepthFirstVisitor implements Visitor {
 
    /**
     * f0 -> "MAIN"
-    * f1 -> "["
-    * f2 -> IntegerLiteral()
-    * f3 -> "]"
-    * f4 -> "["
-    * f5 -> IntegerLiteral()
-    * f6 -> "]"
-    * f7 -> "["
-    * f8 -> IntegerLiteral()
-    * f9 -> "]"
-    * f10 -> StmtList()
-    * f11 -> "END"
-    * f12 -> ( Procedure() )*
-    * f13 -> <EOF>
+    * f1 -> StmtList()
+    * f2 -> "END"
+    * f3 -> ( Procedure() )*
+    * f4 -> <EOF>
     */
    public void visit(Goal n) {
       n.f0.accept(this);
@@ -63,15 +54,6 @@ public class DepthFirstVisitor implements Visitor {
       n.f2.accept(this);
       n.f3.accept(this);
       n.f4.accept(this);
-      n.f5.accept(this);
-      n.f6.accept(this);
-      n.f7.accept(this);
-      n.f8.accept(this);
-      n.f9.accept(this);
-      n.f10.accept(this);
-      n.f11.accept(this);
-      n.f12.accept(this);
-      n.f13.accept(this);
    }
 
    /**
@@ -86,14 +68,7 @@ public class DepthFirstVisitor implements Visitor {
     * f1 -> "["
     * f2 -> IntegerLiteral()
     * f3 -> "]"
-    * f4 -> "["
-    * f5 -> IntegerLiteral()
-    * f6 -> "]"
-    * f7 -> "["
-    * f8 -> IntegerLiteral()
-    * f9 -> "]"
-    * f10 -> StmtList()
-    * f11 -> "END"
+    * f4 -> StmtExp()
     */
    public void visit(Procedure n) {
       n.f0.accept(this);
@@ -101,13 +76,6 @@ public class DepthFirstVisitor implements Visitor {
       n.f2.accept(this);
       n.f3.accept(this);
       n.f4.accept(this);
-      n.f5.accept(this);
-      n.f6.accept(this);
-      n.f7.accept(this);
-      n.f8.accept(this);
-      n.f9.accept(this);
-      n.f10.accept(this);
-      n.f11.accept(this);
    }
 
    /**
@@ -119,10 +87,6 @@ public class DepthFirstVisitor implements Visitor {
     *       | HLoadStmt()
     *       | MoveStmt()
     *       | PrintStmt()
-    *       | ALoadStmt()
-    *       | AStoreStmt()
-    *       | PassArgStmt()
-    *       | CallStmt()
     */
    public void visit(Stmt n) {
       n.f0.accept(this);
@@ -144,7 +108,7 @@ public class DepthFirstVisitor implements Visitor {
 
    /**
     * f0 -> "CJUMP"
-    * f1 -> Reg()
+    * f1 -> Temp()
     * f2 -> Label()
     */
    public void visit(CJumpStmt n) {
@@ -164,9 +128,9 @@ public class DepthFirstVisitor implements Visitor {
 
    /**
     * f0 -> "HSTORE"
-    * f1 -> Reg()
+    * f1 -> Temp()
     * f2 -> IntegerLiteral()
-    * f3 -> Reg()
+    * f3 -> Temp()
     */
    public void visit(HStoreStmt n) {
       n.f0.accept(this);
@@ -177,8 +141,8 @@ public class DepthFirstVisitor implements Visitor {
 
    /**
     * f0 -> "HLOAD"
-    * f1 -> Reg()
-    * f2 -> Reg()
+    * f1 -> Temp()
+    * f2 -> Temp()
     * f3 -> IntegerLiteral()
     */
    public void visit(HLoadStmt n) {
@@ -190,7 +154,7 @@ public class DepthFirstVisitor implements Visitor {
 
    /**
     * f0 -> "MOVE"
-    * f1 -> Reg()
+    * f1 -> Temp()
     * f2 -> Exp()
     */
    public void visit(MoveStmt n) {
@@ -209,54 +173,43 @@ public class DepthFirstVisitor implements Visitor {
    }
 
    /**
-    * f0 -> "ALOAD"
-    * f1 -> Reg()
-    * f2 -> SpilledArg()
-    */
-   public void visit(ALoadStmt n) {
-      n.f0.accept(this);
-      n.f1.accept(this);
-      n.f2.accept(this);
-   }
-
-   /**
-    * f0 -> "ASTORE"
-    * f1 -> SpilledArg()
-    * f2 -> Reg()
-    */
-   public void visit(AStoreStmt n) {
-      n.f0.accept(this);
-      n.f1.accept(this);
-      n.f2.accept(this);
-   }
-
-   /**
-    * f0 -> "PASSARG"
-    * f1 -> IntegerLiteral()
-    * f2 -> Reg()
-    */
-   public void visit(PassArgStmt n) {
-      n.f0.accept(this);
-      n.f1.accept(this);
-      n.f2.accept(this);
-   }
-
-   /**
-    * f0 -> "CALL"
-    * f1 -> SimpleExp()
-    */
-   public void visit(CallStmt n) {
-      n.f0.accept(this);
-      n.f1.accept(this);
-   }
-
-   /**
-    * f0 -> HAllocate()
+    * f0 -> Call()
+    *       | HAllocate()
     *       | BinOp()
     *       | SimpleExp()
     */
    public void visit(Exp n) {
       n.f0.accept(this);
+   }
+
+   /**
+    * f0 -> "BEGIN"
+    * f1 -> StmtList()
+    * f2 -> "RETURN"
+    * f3 -> SimpleExp()
+    * f4 -> "END"
+    */
+   public void visit(StmtExp n) {
+      n.f0.accept(this);
+      n.f1.accept(this);
+      n.f2.accept(this);
+      n.f3.accept(this);
+      n.f4.accept(this);
+   }
+
+   /**
+    * f0 -> "CALL"
+    * f1 -> SimpleExp()
+    * f2 -> "("
+    * f3 -> ( Temp() )*
+    * f4 -> ")"
+    */
+   public void visit(Call n) {
+      n.f0.accept(this);
+      n.f1.accept(this);
+      n.f2.accept(this);
+      n.f3.accept(this);
+      n.f4.accept(this);
    }
 
    /**
@@ -270,7 +223,7 @@ public class DepthFirstVisitor implements Visitor {
 
    /**
     * f0 -> Operator()
-    * f1 -> Reg()
+    * f1 -> Temp()
     * f2 -> SimpleExp()
     */
    public void visit(BinOp n) {
@@ -290,16 +243,7 @@ public class DepthFirstVisitor implements Visitor {
    }
 
    /**
-    * f0 -> "SPILLEDARG"
-    * f1 -> IntegerLiteral()
-    */
-   public void visit(SpilledArg n) {
-      n.f0.accept(this);
-      n.f1.accept(this);
-   }
-
-   /**
-    * f0 -> Reg()
+    * f0 -> Temp()
     *       | IntegerLiteral()
     *       | Label()
     */
@@ -308,33 +252,12 @@ public class DepthFirstVisitor implements Visitor {
    }
 
    /**
-    * f0 -> "a0"
-    *       | "a1"
-    *       | "a2"
-    *       | "a3"
-    *       | "t0"
-    *       | "t1"
-    *       | "t2"
-    *       | "t3"
-    *       | "t4"
-    *       | "t5"
-    *       | "t6"
-    *       | "t7"
-    *       | "s0"
-    *       | "s1"
-    *       | "s2"
-    *       | "s3"
-    *       | "s4"
-    *       | "s5"
-    *       | "s6"
-    *       | "s7"
-    *       | "t8"
-    *       | "t9"
-    *       | "v0"
-    *       | "v1"
+    * f0 -> "TEMP"
+    * f1 -> IntegerLiteral()
     */
-   public void visit(Reg n) {
+   public void visit(Temp n) {
       n.f0.accept(this);
+      n.f1.accept(this);
    }
 
    /**

@@ -6,20 +6,20 @@ package syntaxtree;
 
 /**
  * Grammar production:
- * f0 -> "JUMP"
- * f1 -> Label()
+ * f0 -> "TEMP"
+ * f1 -> IntegerLiteral()
  */
-public class JumpStmt implements Node {
+public class Temp implements Node {
    public NodeToken f0;
-   public Label f1;
+   public IntegerLiteral f1;
 
-   public JumpStmt(NodeToken n0, Label n1) {
+   public Temp(NodeToken n0, IntegerLiteral n1) {
       f0 = n0;
       f1 = n1;
    }
 
-   public JumpStmt(Label n0) {
-      f0 = new NodeToken("JUMP");
+   public Temp(IntegerLiteral n0) {
+      f0 = new NodeToken("TEMP");
       f1 = n0;
    }
 

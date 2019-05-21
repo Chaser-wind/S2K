@@ -6,7 +6,7 @@ package syntaxtree;
 
 /**
  * Grammar production:
- * f0 -> Reg()
+ * f0 -> Temp()
  *       | IntegerLiteral()
  *       | Label()
  */
