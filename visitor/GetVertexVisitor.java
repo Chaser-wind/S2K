@@ -4,10 +4,15 @@ import syntaxtree.*;
 import utils.*;
 
 class GetVertexVisitor extends GJNoArguDepthFirst<String> {
-    HashMap<String, Method> mMethod = new HashMap<String, Method>();
-    HashMap<String, Integer> mLabel = new HashMap<String, Integer>();
+    HashMap<String, Method> mMethod;
+    HashMap<String, Integer> mLabel;
     Method current;
     int vtid;
+    public GetVertexVisitor(HashMap<String, Method>m, 
+    					HashMap<String, Integer>l) {
+    	mMethod = m;
+    	mLabel = l;
+    }
     public String visit(NodeOptional n) {
 		if (n.present()) {
 			mLabel.put(n.node.accept(this), vtid);
