@@ -1,7 +1,6 @@
 package utils;
-import java.util.*;
 
-class Interval {
+public class Interval {
 	public int begin, end;
 	// public boolean S = false;
 	public int tempNo;
@@ -12,7 +11,7 @@ class Interval {
 		this.tempNo = tempNo;
 	}
 
-	public bool compare(Interval b) {
+	public boolean compare(Interval b) {
 		if (begin == b.begin)
 			return end < b.end;
 		return begin < b.begin;

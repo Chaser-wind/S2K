@@ -34,7 +34,7 @@ public class GetGraphVisitor extends  GJNoArguDepthFirst<String> {
 	}
 
 	/**
-	 * f0 -> Label()
+	* f0 -> Label()
 	* f1 -> "["
 	* f2 -> IntegerLiteral()
 	* f3 -> "]"
@@ -104,7 +104,7 @@ public class GetGraphVisitor extends  GJNoArguDepthFirst<String> {
         * f1 -> Temp()
         * f2 -> Label()
         */
-        public STring visit(CJumpStmt n) {
+        public String visit(CJumpStmt n) {
                 curMethod.graph.addEdge(vid, vid + 1);
                 String label = n.f2.f0.tokenImage;
                 int target = mLabel.get(label);
@@ -118,7 +118,7 @@ public class GetGraphVisitor extends  GJNoArguDepthFirst<String> {
         * f1 -> Label()
         */
         public String visit(JumpStmt n) {
-                String label = n.f2.f0.tokenImage;
+                String label = n.f1.f0.tokenImage;
                 int target = mLabel.get(label);
                 curMethod.graph.addEdge(vid, target);
                 return null;
@@ -158,7 +158,7 @@ public class GetGraphVisitor extends  GJNoArguDepthFirst<String> {
         public String visit(MoveStmt n) {
                 curMethod.graph.addEdge(vid, vid + 1);
                 n.f1.accept(this);
-                n.f3.accept(this);
+                n.f2.accept(this);
                 return null;
         }
         
@@ -179,9 +179,9 @@ public class GetGraphVisitor extends  GJNoArguDepthFirst<String> {
         * f3 -> SimpleExp()
         * f4 -> "END"
         */
-        public String visit(StmtExp n) {
+        // public String visit(StmtExp n) {
                 
-        }
+        // }
         
         /**
          * f0 -> "CALL"
@@ -191,7 +191,7 @@ public class GetGraphVisitor extends  GJNoArguDepthFirst<String> {
         * f4 -> ")"
         */
         public String visit(Call n) {
-                
+                return null;
         }
 
         
