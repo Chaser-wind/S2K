@@ -48,6 +48,9 @@ public class S2K {
                 outputfile = args[0].substring(0, args[0].length() - 4) + ".kg";
             }
             OutputStream out = new FileOutputStream(outputfile);
+            if (code == null) {
+                code = "";
+            }
             out.write(code.getBytes());
             out.close();
             System.out.println(String.format("%s -> %s is finished.", args[0], outputfile));

@@ -25,7 +25,7 @@ public class GetGraphVisitor extends  GJNoArguDepthFirst<String> {
 	*/
 	public String visit(Goal n) {
                 vid = 0;
-                curMethod = mMethod.get("Main");
+                curMethod = mMethod.get("MAIN");
                 curMethod.graph.addEdge(0, 1);
                 vid = 1;
                 n.f1.accept(this);
