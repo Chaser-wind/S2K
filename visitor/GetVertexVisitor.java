@@ -3,7 +3,7 @@ import java.util.*;
 import syntaxtree.*;
 import utils.*;
 
-class GetVertexVisitor extends GJNoArguDepthFirst<String> {
+public class GetVertexVisitor extends GJNoArguDepthFirst<String> {
     HashMap<String, Method> mMethod;
     HashMap<String, Integer> mLabel;
     Method current;
@@ -67,10 +67,10 @@ class GetVertexVisitor extends GJNoArguDepthFirst<String> {
 		Integer tempNo = Integer.parseInt(n.f1.accept(this));
 		if (!current.mTemp.containsKey(tempNo)) {
 			if (tempNo < current.paramNum)
-				// parameter
+				// func parameter
 				current.mTemp.put(tempNo, new Interval(tempNo, 0, vtid));
 			else
-				// local Temp (first shows up at vid)
+				// local Temp
 				current.mTemp.put(tempNo, new Interval(tempNo, vtid, vtid));
 		}
 		return (tempNo).toString();
