@@ -76,10 +76,10 @@ public class GetGraphVisitor extends  GJNoArguDepthFirst<String> {
                 curMethod.graph.addEdge(vid, vid + 1);
                 vid++;
                 n.f1.accept(this);
-                curMethod.graph.addEdge(vid, vid + 1);
-                vid++;
+                //curMethod.graph.addEdge(vid, vid + 1);
+                //vid++;
                 n.f3.accept(this);
-                vid++;
+                curMethod.graph.addEdge(vid, vid + 1);
                 return null;
 	}
 
@@ -145,8 +145,9 @@ public class GetGraphVisitor extends  GJNoArguDepthFirst<String> {
         */
         public String visit(HLoadStmt n) {
                 curMethod.graph.addEdge(vid, vid + 1);
-                n.f1.accept(this);
-                n.f3.accept(this);
+                //n.f1.accept(this);
+                curVertex.Def.add(Integer.parseInt(n.f1.f1.f0.toString()));
+                n.f2.accept(this);
                 return null;
         }
         
@@ -157,7 +158,9 @@ public class GetGraphVisitor extends  GJNoArguDepthFirst<String> {
         */
         public String visit(MoveStmt n) {
                 curMethod.graph.addEdge(vid, vid + 1);
-                n.f1.accept(this);
+                //n.f1.accept(this);
+                //System.out.println(n.f1.f1.f0.toString());
+                curVertex.Def.add(Integer.parseInt(n.f1.f1.f0.toString()));
                 n.f2.accept(this);
                 return null;
         }
@@ -173,15 +176,14 @@ public class GetGraphVisitor extends  GJNoArguDepthFirst<String> {
         }
         
         /**
-         * f0 -> "BEGIN"
-        * f1 -> StmtList()
-        * f2 -> "RETURN"
-        * f3 -> SimpleExp()
-        * f4 -> "END"
-        */
-        // public String visit(StmtExp n) {
-                
-        // }
+	 * f0 -> Call()
+	 * | HAllocate()
+	 * | BinOp()
+	 * | SimpleExp()
+	 */
+        public String visit(Exp n) {
+                return n.f0.accept(this);
+        }
         
         /**
          * f0 -> "CALL"
@@ -191,16 +193,54 @@ public class GetGraphVisitor extends  GJNoArguDepthFirst<String> {
         * f4 -> ")"
         */
         public String visit(Call n) {
+                n.f1.accept(this);
+                n.f3.accept(this);
                 return null;
         }
 
+        /**
+	 * f0 -> "HALLOCATE"
+	 * f1 -> SimpleExp()
+	 */
+        public String visit(HAllocate n) {
+                return n.f1.accept(this);
+        }
+        
+        /**
+	 * f0 -> Operator()
+	 * f1 -> Temp()
+	 * f2 -> SimpleExp()
+	 */
+        public String visit(BinOp n) {
+                n.f0.accept(this);
+                // use temp
+                //curVertex.Use.add(Integer.parseInt(n.f1.accept(this)));
+                n.f1.accept(this);
+                n.f2.accept(this);
+                return null;
+        }
+
+        /**
+	 * f0 -> Temp()
+	 * | IntegerLiteral()
+	 * | Label()
+	 */
+	public String visit(SimpleExp n) {
+                if (n.f0.which == 0) {
+                        // use temp
+                        curVertex.Use.add(Integer.parseInt(n.f0.accept(this)));
+                }
+		return null;
+        }
         
         /**
          * f0 -> "TEMP"
         * f1 -> IntegerLiteral()
         */
         public String visit(Temp n) {
-                return null;
+                Integer tempid = Integer.parseInt(n.f1.accept(this));
+                curVertex.Use.add(tempid);
+                return tempid.toString();
         }
         
         /**

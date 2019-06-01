@@ -64,16 +64,16 @@ public class GetVertexVisitor extends GJNoArguDepthFirst<String> {
 		return null;
     }
     public String visit(Temp n) {
-		Integer tempNo = Integer.parseInt(n.f1.accept(this));
-		if (!current.mTemp.containsKey(tempNo)) {
-			if (tempNo < current.paramNum)
+		Integer tempid = Integer.parseInt(n.f1.accept(this));
+		if (!current.mTemp.containsKey(tempid)) {
+			if (tempid < current.paramNum)
 				// func parameter
-				current.mTemp.put(tempNo, new Interval(tempNo, 0, vtid));
+				current.mTemp.put(tempid, new Interval(tempid, 0, vtid));
 			else
 				// local Temp
-				current.mTemp.put(tempNo, new Interval(tempNo, vtid, vtid));
+				current.mTemp.put(tempid, new Interval(tempid, vtid, vtid));
 		}
-		return (tempNo).toString();
+		return (tempid).toString();
     }
     public String visit(IntegerLiteral n) {
 		return n.f0.toString();

@@ -28,8 +28,8 @@ public class S2K {
             alloc.LinearScan();
 
             S2KVisitor s2k= new S2KVisitor(mMethod);
-            String code = root.accept(s2k);
-
+            root.accept(s2k);
+            String code = s2k.code.toString();
             // new SpigletParser(in);
 			// Node AST = SpigletParser.Goal();
 			// // visit 1: Get Flow Graph Vertex
@@ -48,9 +48,6 @@ public class S2K {
                 outputfile = args[0].substring(0, args[0].length() - 4) + ".kg";
             }
             OutputStream out = new FileOutputStream(outputfile);
-            if (code == null) {
-                code = "";
-            }
             out.write(code.getBytes());
             out.close();
             System.out.println(String.format("%s -> %s is finished.", args[0], outputfile));

@@ -1,8 +1,8 @@
 package utils;
 
-public class Interval {
+public class Interval implements Comparable<Interval> {
 	public int begin, end;
-	// public boolean S = false;
+	public boolean S = false;
 	public int tempNo;
 
 	public Interval(int tempNo, int begin, int end) {
@@ -11,9 +11,9 @@ public class Interval {
 		this.tempNo = tempNo;
 	}
 
-	public boolean compare(Interval b) {
+	public int compareTo(Interval b) {
 		if (begin == b.begin)
-			return end < b.end;
-		return begin < b.begin;
+			return end - b.end;
+		return begin - b.begin;
 	}
 }
