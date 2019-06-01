@@ -2,7 +2,7 @@ package utils;
 
 public class Interval implements Comparable<Interval> {
 	public int begin, end;
-	public boolean S = false;
+	public boolean save = false;
 	public int tempNo;
 
 	public Interval(int tempNo, int begin, int end) {

@@ -9,27 +9,25 @@ public class RegAlloc {
         mMethod = m;
     }
     void LiveAnalyze() {
-        boolean notOver = true;
+        boolean going = true;
         int size = curGraph.Vertexs.size();
-		// Iterate
-		while (notOver) {
-			notOver = false;
-			for (int currVid = size - 1; currVid >= 0; currVid--) {
-				// System.out.println(currVid);
-				GraphVertex currVertex = curGraph.VertexMap.get(currVid);
-				// System.out.println(currVertex.toString());
-				for (GraphVertex nextVertex : currVertex.Succ)
-					currVertex.Out.addAll(nextVertex.In);
+		// Iterate until convergence
+		while (going) {
+			going = false;
+			for (int vid = size - 1; vid >= 0; vid--) {
+				GraphVertex currVertex = curGraph.VertexMap.get(vid);
+				for (GraphVertex next : currVertex.Succ)
+					currVertex.Out.addAll(next.In);
 
 				HashSet<Integer> newIn = new HashSet<Integer>();
 				// 'Out' - 'Def' + 'Use'
 				newIn.addAll(currVertex.Out);
 				newIn.removeAll(currVertex.Def);
 				newIn.addAll(currVertex.Use);
-				// 'In' changes, iteration not over
+				// 'In' changes, doesn't converge
 				if (!currVertex.In.equals(newIn)) {
 					currVertex.In = newIn;
-					notOver = true;
+					going = true;
 				}
 			}
 		}
@@ -37,26 +35,26 @@ public class RegAlloc {
     void GetLiveInterval() {
         int size = curGraph.VertexMap.size();
 
-		// update interval 'end'
+		// update 'end' of intervals
 		for (int vid = 0; vid < size; vid++) {
 			GraphVertex currVertex = curGraph.VertexMap.get(vid);
-			for (Integer tempNo : currVertex.In)
-				curMethod.mTemp.get(tempNo).end = vid;
-			for (Integer tempNo : currVertex.Out)
-				curMethod.mTemp.get(tempNo).end = vid;
+			for (Integer tempid : currVertex.In)
+				curMethod.mTemp.get(tempid).end = vid;
+			for (Integer tempid : currVertex.Out)
+				curMethod.mTemp.get(tempid).end = vid;
 		}
 
 		for (Interval interval : curMethod.mTemp.values()) {
 			for (int callPos : curGraph.CallPos) {
-				// across a method call, better use callee-saved regS
+				// alive when calling other method
+				// had better use callee-saved regs
 				if (interval.begin < callPos && interval.end > callPos)
-					interval.S = true;
+					interval.save = true;
 			}
 		}
     }
     public void LinearScan() {
         for (Method method : mMethod.values()) {
-			// System.out.println(method.methodName);
 			curMethod = method;
 			curGraph = curMethod.graph;
 			LiveAnalyze();
@@ -107,7 +105,7 @@ public class RegAlloc {
 					}
 				}
 				// first assign T
-				if (!interval.S) {
+				if (!interval.save) {
 					if (emptyT != -1) {
 						// assign empty T to interval
 						Tinterval[emptyT] = interval;
