@@ -74,23 +74,23 @@ public class RegAlloc {
 				intervals.add(interval);
 			Collections.sort(intervals);
             
-			Interval[] Tinterval = new Interval[10];
-			Interval[] Sinterval = new Interval[8];
+			Interval[] Tregs = new Interval[10];
+			Interval[] Sregs = new Interval[8];
 			for (Interval interval : intervals) {
 				// last: the reg contains interval which ends last
 				// empty: empty reg
 				int lastT = -1, lastS = -1, emptyT = -1, emptyS = -1;
 				// analyze t0-t9
 				for (int regIdx = 9; regIdx >= 0; regIdx--) {
-					if (Tinterval[regIdx] != null) {
+					if (Tregs[regIdx] != null) {
 						// not empty
-						if (Tinterval[regIdx].end <= interval.begin) {
+						if (Tregs[regIdx].end <= interval.begin) {
 							// interval already ends
-							curMethod.regT.put("TEMP " + Tinterval[regIdx].tempNo, "t" + regIdx);
-							Tinterval[regIdx] = null;
+							curMethod.regT.put("TEMP " + Tregs[regIdx].tempNo, "t" + regIdx);
+							Tregs[regIdx] = null;
 							emptyT = regIdx;
 						} else {
-							if (lastT == -1 || Tinterval[regIdx].end > Tinterval[lastT].end)
+							if (lastT == -1 || Tregs[regIdx].end > Tregs[lastT].end)
 								lastT = regIdx;
 						}
 					} else {
@@ -99,13 +99,13 @@ public class RegAlloc {
 				}
 				// analyze s0-s7
 				for (int regIdx = 7; regIdx >= 0; regIdx--) {
-					if (Sinterval[regIdx] != null) {
-						if (Sinterval[regIdx].end <= interval.begin) {
-							curMethod.regS.put("TEMP " + Sinterval[regIdx].tempNo, "s" + regIdx);
-							Sinterval[regIdx] = null;
+					if (Sregs[regIdx] != null) {
+						if (Sregs[regIdx].end <= interval.begin) {
+							curMethod.regS.put("TEMP " + Sregs[regIdx].tempNo, "s" + regIdx);
+							Sregs[regIdx] = null;
 							emptyS = regIdx;
 						} else {
-							if (lastS == -1 || Sinterval[regIdx].end > Sinterval[lastS].end)
+							if (lastS == -1 || Sregs[regIdx].end > Sregs[lastS].end)
 								lastS = regIdx;
 						}
 					} else {
@@ -116,13 +116,13 @@ public class RegAlloc {
 				if (!interval.save) {
 					if (emptyT != -1) {
 						// assign empty T to interval
-						Tinterval[emptyT] = interval;
+						Tregs[emptyT] = interval;
 						interval = null;
 					} else {
 						// swap with the last T
-						if (interval.end < Tinterval[lastT].end) {
-							Interval swapTmp = Tinterval[lastT];
-							Tinterval[lastT] = interval;
+						if (interval.end < Tregs[lastT].end) {
+							Interval swapTmp = Tregs[lastT];
+							Tregs[lastT] = interval;
 							interval = swapTmp;
 						}
 					}
@@ -130,27 +130,29 @@ public class RegAlloc {
 				// then assign S
 				if (interval != null) {
 					if (emptyS != -1) {
-						Sinterval[emptyS] = interval;
+						Sregs[emptyS] = interval;
 						interval = null;
 					} else {
-						if (interval.end < Sinterval[lastS].end) {
-							Interval swapTmp = Sinterval[lastS];
-							Sinterval[lastS] = interval;
+						if (interval.end < Sregs[lastS].end) {
+							Interval swapTmp = Sregs[lastS];
+							Sregs[lastS] = interval;
 							interval = swapTmp;
 						}
 					}
 				}
 				// if not assigned, spill it
+				// spill temp whose interval is longest.
+				// save more space for register.
 				if (interval != null)
 					curMethod.regSpilled.put("TEMP " + interval.tempNo, "");
 			}
 			for (int idx = 0; idx < 10; idx++) {
-				if (Tinterval[idx] != null)
-					curMethod.regT.put("TEMP " + Tinterval[idx].tempNo, "t" + idx);
+				if (Tregs[idx] != null)
+					curMethod.regT.put("TEMP " + Tregs[idx].tempNo, "t" + idx);
 			}
 			for (int idx = 0; idx < 8; idx++) {
-				if (Sinterval[idx] != null)
-					curMethod.regS.put("TEMP " + Sinterval[idx].tempNo, "s" + idx);
+				if (Sregs[idx] != null)
+					curMethod.regS.put("TEMP " + Sregs[idx].tempNo, "s" + idx);
 			}
 			// calculate stackNum:
 			// contains params(>4), spilled regs, callee-saved S
