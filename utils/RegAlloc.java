@@ -1,6 +1,14 @@
 package utils;
 import java.util.*;
-
+/*
+ * 	RegAlloc:
+ * 	
+ * 		Allocate registers for Temp
+ * 		based on the graph and usage infomation of Temp
+ * 		
+ * 		iterate to calculate live interval of Temp
+ * 		then do linear scan algorithm to allocate register
+ */
 public class RegAlloc {
     HashMap<String, Method> mMethod;
     Graph curGraph;

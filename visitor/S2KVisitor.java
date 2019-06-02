@@ -10,7 +10,8 @@ public class S2KVisitor extends GJNoArguDepthFirst<String> {
     public S2KVisitor(HashMap<String, Method> m) {
         mMethod = m;
         code = new StringBuilder();
-    }
+	}
+	
     String getNewLabel(String labelName) {
 		return labelName + "_" + curMethod.methodName;
 	}
@@ -23,17 +24,6 @@ public class S2KVisitor extends GJNoArguDepthFirst<String> {
 		} else if (curMethod.regS.containsKey(tempName)) {
 			return curMethod.regS.get(tempName);
 		} else {
-			/*
-			System.out.println("*****" + tempName);
-			for (String i : currMethod.regT.keySet())
-				System.out.println("****" + i);
-			for (String i : currMethod.regS.keySet())
-				System.out.println("***" + i);
-			for (String i : currMethod.regSpilled.keySet())
-				System.out.println("**" + i);
-			*/
-            // spilled
-            
 			code.append(String.format("\t\tALOAD %s %s\n", regName, curMethod.regSpilled.get(tempName)));
 			return regName;
 		}
@@ -55,7 +45,7 @@ public class S2KVisitor extends GJNoArguDepthFirst<String> {
 	// StmtList ::= ( (Label)?Stmt)*
 	// get Labels
 	public String visit(NodeOptional n) {
-		if (n.present()) // print new label
+		if (n.present()) // get new label
 			code.append(getNewLabel(n.node.accept(this)));
 		return null;
 	}
@@ -278,18 +268,18 @@ public class S2KVisitor extends GJNoArguDepthFirst<String> {
 	 * f0 -> "LT" | "PLUS" | "MINUS" | "TIMES"
 	 */
 	public String visit(Operator n) {
-		String[] _ret = { "LT ", "PLUS ", "MINUS ", "TIMES " };
-		return _ret[n.f0.which];
+		String[] ops = { "LT ", "PLUS ", "MINUS ", "TIMES " };
+		return ops[n.f0.which];
 	}
 
 	/**
 	 * f0 -> Temp() | IntegerLiteral() | Label()
 	 */
 	public String visit(SimpleExp n) {
-		String _ret = n.f0.accept(this);
+		String out = n.f0.accept(this);
 		if (n.f0.which == 0)
-			_ret = temp2Reg("v1", _ret);
-		return _ret;
+			out = temp2Reg("v1", out);
+		return out;
 	}
 
 	/**
